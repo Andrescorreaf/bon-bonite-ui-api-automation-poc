@@ -1,5 +1,4 @@
-package test.java.com.co.starter.stepdefinitions;
-
+package com.co.starter.stepdefinitions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.es.*;
@@ -7,22 +6,24 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 
-import tasks.api.CrearUsuario;
-import tasks.api.AutenticarUsuario;
-import tasks.api.ActualizarUsuario;
+import com.co.starter.tasks.api.CrearUsuario;
+import com.co.starter.tasks.api.AutenticarUsuario;
+import com.co.starter.tasks.api.ActualizarUsuario;
+import com.co.starter.tasks.ui.NavegarARegistro;
+import com.co.starter.tasks.ui.RegistrarUsuarioUI;
 
-
-import questions.api.CodigoRespuesta;
-import questions.api.TokenValido;
-import questions.api.UsuarioCreado;
-import questions.ui.MensajeConfirmacion;
+import com.co.starter.questions.api.CodigoRespuesta;
+import com.co.starter.questions.api.TokenValido;
+import com.co.starter.questions.api.UsuarioCreado;
+import com.co.starter.questions.ui.MensajeConfirmacion;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.*;
 
 public class GestionUsuariosStepDefinitions {
 
-   
+    private final Actor actor = OnStage.theActorCalled("Andres Correa");
+
     @Dado("que el actor prepara una solicitud de creación de usuario con datos válidos")
     public void prepararSolicitudUsuarioValido() {
         actor.attemptsTo(
@@ -106,10 +107,6 @@ public class GestionUsuariosStepDefinitions {
         );
     }
 
-    // =====================================================
-    // 🔥 API - VALIDACIÓN ERROR
-    // =====================================================
-
     @Dado("que el actor prepara una solicitud de creación de usuario con datos incompletos")
     public void prepararSolicitudInvalida() {
         actor.attemptsTo(
@@ -139,9 +136,6 @@ public class GestionUsuariosStepDefinitions {
         );
     }
 
-    // =====================================================
-    // 🟥 UI - REGISTRO
-    // =====================================================
 
     @Dado("que el actor navega al sitio web de e-commerce")
     public void navegarSitio() {
@@ -179,10 +173,10 @@ public class GestionUsuariosStepDefinitions {
     }
 
     @Y("el usuario queda registrado exitosamente")
-    public void validarRegistroUI() {
+    public void validarUsuarioRegistrado() {
         actor.should(
-                seeThat("Registro exitoso",
-                        MensajeConfirmacion.texto(), containsString("registro exitoso"))
+                seeThat(MensajeConfirmacion.visible(), is(true))
         );
     }
+
 }

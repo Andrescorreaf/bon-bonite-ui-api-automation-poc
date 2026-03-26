@@ -1,10 +1,16 @@
 package main.java.com.co.starter.interactions;
 
+import io.restassured.response.Response;
+import net.serenitybdd.rest.SerenityRest;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Interaction;
+
+import static net.serenitybdd.screenplay.Tasks.instrumented;
 
 public class PostRequest implements Interaction {
 
-    private String endpoint;
-    private Object body;
+    private final String endpoint;
+    private final Object body;
 
     public PostRequest(String endpoint, Object body) {
         this.endpoint = endpoint;

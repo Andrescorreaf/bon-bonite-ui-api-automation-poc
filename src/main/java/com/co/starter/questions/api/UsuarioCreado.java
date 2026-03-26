@@ -1,5 +1,9 @@
 package main.java.com.co.starter.questions.api;
 
+import io.restassured.response.Response;
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.Question;
+
 public class UsuarioCreado implements Question<Boolean> {
 
     public static UsuarioCreado correctamente() {

@@ -1,6 +1,6 @@
-package main.java.com.co.starter.tasks.api;
+package com.co.starter.tasks.api;
 
-import interactions.PostRequest;
+import com.co.starter.interactions.PostRequest;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
@@ -9,10 +9,9 @@ import java.util.Map;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
-
 public class CrearUsuario implements Task {
 
-    private Map<String, Object> body;
+    private final Map<String, Object> body;
 
     public CrearUsuario(Map<String, Object> body) {
         this.body = body;

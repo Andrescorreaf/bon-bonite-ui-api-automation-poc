@@ -6,6 +6,8 @@ import net.serenitybdd.core.annotations.findby.By;
 public class SitioDeRegistro {   
 
     public static final Target NUMERO_CEDULA = Target.the("Número de cédula").located(By.id("reg_username"));
+    public static final Target PRIMER_NOMBRE = Target.the("Primer nombre").located(By.id("reg_first_name"));
+    public static final Target APELLIDO = Target.the("Apellido").located(By.id("reg_last_name"));
     public static final Target EMAIL = Target.the("Email").located(By.id("reg_email"));
     public static final Target CONTRASENA = Target.the("Contraseña").located(By.id("reg_password"));
     public static final Target BTN_ACEPTAR_TERMINOS = Target.the("Botón de aceptar términos y condiciones").located(By.id("privacy_policy_reg"));

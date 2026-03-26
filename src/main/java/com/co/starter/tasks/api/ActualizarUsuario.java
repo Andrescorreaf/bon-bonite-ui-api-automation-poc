@@ -1,6 +1,7 @@
-package main.java.com.co.starter.tasks.api;
+package com.co.starter.tasks.api;
 
-import interactions.PostRequest;
+import com.co.starter.interactions.PostRequest;
+import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class ActualizarUsuario implements Task {
     }
 
     @Override
-    public <T extends net.serenitybdd.screenplay.Actor> void performAs(T actor) {
+    public <T extends Actor> void performAs(T actor) {
 
         Map<String, Object> body = new HashMap<>();
         body.put("nombre", "Usuario Actualizado");

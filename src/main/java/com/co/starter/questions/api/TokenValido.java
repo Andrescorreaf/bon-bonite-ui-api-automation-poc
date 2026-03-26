@@ -4,15 +4,16 @@ import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-public class CodigoRespuesta implements Question<Integer> {
+public class TokenValido implements Question<Boolean> {
 
-    public static CodigoRespuesta es() {
-        return new CodigoRespuesta();
+    public static TokenValido existe() {
+        return new TokenValido();
     }
 
     @Override
-    public Integer answeredBy(Actor actor) {
+    public Boolean answeredBy(Actor actor) {
         Response response = actor.recall("response");
-        return response.getStatusCode();
+        String token = response.jsonPath().getString("token");
+        return token != null && !token.isEmpty();
     }
 }
