@@ -1,4 +1,4 @@
-package main.java.com.co.starter.interactions;
+package com.co.starter.interactions;
 
 import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;

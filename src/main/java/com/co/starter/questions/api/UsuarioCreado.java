@@ -1,4 +1,4 @@
-package main.java.com.co.starter.questions.api;
+package com.co.starter.questions.api;
 
 import io.restassured.response.Response;
 import net.serenitybdd.screenplay.Actor;

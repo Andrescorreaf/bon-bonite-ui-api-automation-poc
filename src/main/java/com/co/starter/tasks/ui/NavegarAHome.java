@@ -14,7 +14,7 @@ public class NavegarAHome implements Task {
     @Override
     public <T extends net.serenitybdd.screenplay.Actor> void performAs(T actor) {
         actor.attemptsTo(
-                Open.url("/") // usa baseUrl de serenity.conf
+                Open.url("https://www.bon-bonite.com/mi-cuenta/") // URL completa para la página de cuenta
         );
     }
 }

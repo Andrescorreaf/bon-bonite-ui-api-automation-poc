@@ -25,6 +25,14 @@ public class CrearUsuario implements Task {
         return instrumented(CrearUsuario.class, body);
     }
 
+    public static CrearUsuario conDatos(String email, String password) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", email);
+        body.put("password", password);
+
+        return instrumented(CrearUsuario.class, body);
+    }
+
     public static CrearUsuario conDatosInvalidos() {
         Map<String, Object> body = new HashMap<>();
         body.put("email", "");

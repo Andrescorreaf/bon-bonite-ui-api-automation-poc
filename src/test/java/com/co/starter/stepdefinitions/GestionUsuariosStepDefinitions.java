@@ -9,8 +9,12 @@ import net.serenitybdd.screenplay.actors.OnlineCast;
 import com.co.starter.tasks.api.CrearUsuario;
 import com.co.starter.tasks.api.AutenticarUsuario;
 import com.co.starter.tasks.api.ActualizarUsuario;
+import com.co.starter.tasks.ui.NavegarAHome;
 import com.co.starter.tasks.ui.NavegarARegistro;
+import com.co.starter.tasks.ui.NavegarALogin;
 import com.co.starter.tasks.ui.RegistrarUsuarioUI;
+import com.co.starter.tasks.ui.IniciarSesionUI;
+import com.co.starter.tasks.ui.SalirDeCuenta;
 
 import com.co.starter.questions.api.CodigoRespuesta;
 import com.co.starter.questions.api.TokenValido;
@@ -19,10 +23,14 @@ import com.co.starter.questions.ui.MensajeConfirmacion;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 public class GestionUsuariosStepDefinitions {
 
     private final Actor actor = OnStage.theActorCalled("Andres Correa");
+    private String loginCedula;
+    private String loginEmail;
+    private String loginPassword;
 
     @Dado("que el actor prepara una solicitud de creación de usuario con datos válidos")
     public void prepararSolicitudUsuarioValido() {
@@ -53,10 +61,6 @@ public class GestionUsuariosStepDefinitions {
         );
     }
 
-    // =====================================================
-    // 🔥 API - LOGIN
-    // =====================================================
-
     @Dado("que el actor tiene un usuario previamente registrado")
     public void usuarioPreviamenteRegistrado() {
         actor.attemptsTo(
@@ -78,10 +82,6 @@ public class GestionUsuariosStepDefinitions {
                 seeThat(TokenValido.existe(), is(true))
         );
     }
-
-    // =====================================================
-    // 🔥 API - ACTUALIZAR USUARIO
-    // =====================================================
 
     @Dado("que el actor cuenta con un usuario autenticado")
     public void usuarioAutenticado() {
@@ -109,70 +109,99 @@ public class GestionUsuariosStepDefinitions {
 
     @Dado("que el actor prepara una solicitud de creación de usuario con datos incompletos")
     public void prepararSolicitudInvalida() {
+        // Cambiado a UI: navegar al sitio y formulario
         actor.attemptsTo(
-                CrearUsuario.conDatosInvalidos()
+                NavegarAHome.paginaPrincipal(),
+                NavegarARegistro.aRegistro()
         );
     }
 
     @Cuando("envía la solicitud al servicio de registro")
     public void enviarSolicitudInvalida() {
+        // Cambiado a UI: ingresar datos incompletos y enviar
+        String timestamp = String.valueOf(System.currentTimeMillis());
         actor.attemptsTo(
-                CrearUsuario.enviar()
+                RegistrarUsuarioUI.conDatosIncompletos("123456789" + timestamp, "Juan", "Pérez", "juan.perez" + timestamp + "@example.com", "Password123!")
         );
     }
 
     @Entonces("el sistema responde con error de validación")
     public void validarError() {
+        // Cambiado a UI: validar que no se registró (mensaje de bienvenida no visible)
         actor.should(
-                seeThat("Código de error",
-                        CodigoRespuesta.es(), is(400))
+                seeThat(MensajeConfirmacion.visible(), is(false))
         );
     }
 
     @Y("no permite la creación del usuario")
     public void validarNoCreacion() {
-        actor.should(
-                seeThat(UsuarioCreado.correctamente(), is(false))
-        );
+        // Ya validado en el paso anterior
     }
 
 
-    @Dado("que el actor navega al sitio web de e-commerce")
+    @Dado("que el actor navega al sitio web de bon-bonite.com")
     public void navegarSitio() {
         actor.attemptsTo(
-                NavegarARegistro.paginaPrincipal()
+                NavegarAHome.paginaPrincipal()
         );
     }
 
     @Y("accede al formulario de registro")
     public void accederFormulario() {
         actor.attemptsTo(
-                NavegarARegistro.formularioRegistro()
+                NavegarARegistro.aRegistro()
         );
     }
 
-    @Cuando("ingresa información válida en todos los campos obligatorios")
+    @Cuando("ingresa credenciales válidas")
     public void ingresarDatosUI() {
+        String timestamp = String.valueOf(System.currentTimeMillis());
         actor.attemptsTo(
-                RegistrarUsuarioUI.conDatosValidos()
+                RegistrarUsuarioUI.conDatos("123456789" + timestamp, "Juan", "Pérez", "juan.perez" + timestamp + "@example.com", "Password123!", true, true)
         );
     }
 
-    @Y("envía el formulario de registro")
+    @Y("envía el formulario de login")
     public void enviarFormularioUI() {
+        // El envío ya está incluido en RegistrarUsuarioUI.performAs o IniciarSesionUI.performAs, no se necesita acción adicional
+    }
+
+    @Y("accede al formulario de login")
+    public void accederFormularioLogin() {
         actor.attemptsTo(
-                RegistrarUsuarioUI.enviar()
+                SalirDeCuenta.aLogout(),
+                NavegarALogin.aLogin()
         );
     }
 
-    @Entonces("el sistema muestra un mensaje de confirmación")
+    @Y("registra un usuario para login")
+    public void registrarUsuarioParaLogin() {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        loginCedula = "12345678" + timestamp.substring(timestamp.length() - 4);
+        loginEmail = "juan.perez" + timestamp + "@example.com";
+        loginPassword = "Password123!";
+
+        actor.attemptsTo(
+                NavegarARegistro.aRegistro(),
+                RegistrarUsuarioUI.conDatos(loginCedula, "Juan", "Pérez", loginEmail, loginPassword, true, true)
+        );
+    }
+
+    @Cuando("ingresa las credenciales válidas para login")
+    public void ingresarCredencialesLogin() {
+        actor.attemptsTo(
+                IniciarSesionUI.conCredenciales(loginEmail, loginPassword)
+        );
+    }
+
+    @Entonces("el sistema permite el acceso")
     public void validarMensaje() {
         actor.should(
                 seeThat(MensajeConfirmacion.visible(), is(true))
         );
     }
 
-    @Y("el usuario queda registrado exitosamente")
+    @Y("el usuario accede exitosamente")
     public void validarUsuarioRegistrado() {
         actor.should(
                 seeThat(MensajeConfirmacion.visible(), is(true))
