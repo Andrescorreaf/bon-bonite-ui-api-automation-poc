@@ -1,0 +1,40 @@
+parameters: {}
+
+jobs:
+  - job: EjecutarTests
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      parallel: 3
+    steps:
+      - task: UseJava@1
+        inputs:
+          versionSpec: '17'
+          jdkArchitecture: 'x64'
+          jdkSourceOption: 'PreInstalled'
+
+      - script: chmod +x gradlew
+        displayName: 'Dar permisos a gradlew'
+
+      - task: Gradle@2
+        displayName: 'Ejecutar tests slice $(System.JobPositionInPhase)'
+        inputs:
+          gradleWrapperFile: 'gradlew'
+          tasks: >
+            clean test aggregate
+            -Denvironment=${{ variables.environment }}
+            -Dtest.slice=$(System.JobPositionInPhase)
+            -Dtest.totalSlices=$(System.TotalJobsInPhase)
+
+      - task: PublishTestResults@2
+        displayName: 'Publicar resultados JUnit'
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '**/TEST-*.xml'
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publicar reporte HTML'
+        inputs:
+          pathToPublish: 'build/reports/serenity'
+          artifactName: 'SerenityReport-$(System.JobPositionInPhase)'

@@ -1,0 +1,14 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - QA
+      - produccion
+
+variables:
+  environment: "$[eq(variables['Build.SourceBranchName'], 'develop') ? 'dev' : eq(variables['Build.SourceBranchName'], 'QA') ? 'qa' : eq(variables['Build.SourceBranchName'], 'produccion') ? 'prod' : 'local']"
+
+jobs:
+  - template: templates/test-job.yml
+
+  - template: templates/merge-job.yml

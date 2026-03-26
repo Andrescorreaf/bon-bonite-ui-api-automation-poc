@@ -1,0 +1,47 @@
+parameters: {}
+
+jobs:
+  - job: UnirReportes
+    dependsOn: []
+    condition: succeeded()
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UseJava@1
+        inputs:
+          versionSpec: '17'
+          jdkArchitecture: 'x64'
+          jdkSourceOption: 'PreInstalled'
+
+      - script: |
+          mkdir -p merged-json
+          for i in $(seq 0 $(( $(System.TotalJobsInPhase) - 1 ))); do
+            mkdir -p "report-$i"
+            echo "##vso[artifact.download artifactName=SerenityReport-$i;targetPath=report-$i]"
+          done
+        displayName: 'Descargar todos los artefactos'
+
+      - script: |
+          mkdir -p build/serenity-merged
+          find . -type f -name "serenity*.json" -exec cp {} build/serenity-merged/ \;
+        displayName: 'Combinar todos los archivos JSON'
+
+      - script: ./gradlew aggregate
+        displayName: 'Generar reporte unificado'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publicar reporte Serenity combinado'
+        inputs:
+          pathToPublish: 'build/reports/serenity'
+          artifactName: 'SerenityReport-Final'
+
+      - task: PowerShell@2
+        displayName: 'Adjuntar reporte Serenity al resumen del pipeline'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $reportPath = "$(System.DefaultWorkingDirectory)/build/reports/serenity/index.html"
+            if (Test-Path $reportPath) {
+              Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Reporte Unificado Serenity;]$reportPath"
+            } else {
+              Write-Host "No se encontró el reporte"

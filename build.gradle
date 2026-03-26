@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id "net.serenity-bdd.serenity-gradle-plugin" version "4.2.13"
+}
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+defaultTasks 'clean', 'test', 'aggregate'
+group = 'proyecto-serenity-gradle-practice-v2'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    serenityVersion = '4.2.13'
+    restAssuredVersion = '4.2.13'
+    serenityCucumberVersion = '4.2.13'
+    junitVersion = '5.9.2'
+    jdbiVersion = '3.37.1'
+    
+}
+
+dependencies {
+    implementation "net.serenity-bdd:serenity-core:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-junit:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay:${serenityVersion}"
+    implementation group: 'net.serenity-bdd', name: 'serenity-assertions',           version: serenityVersion
+    implementation "net.serenity-bdd:serenity-screenplay-rest:${serenityVersion}"
+    implementation 'net.serenity-bdd:serenity-single-page-report:4.2.13'
+    implementation 'net.serenity-bdd:serenity-ensure:4.2.13'
+    implementation 'org.jdbi:jdbi3-core:3.47.0'
+    implementation 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+    testImplementation 'org.awaitility:awaitility:4.2.2'
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'org.json:json:20250107'
+    implementation 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    testImplementation "net.serenity-bdd:serenity-cucumber:${serenityCucumberVersion}"
+    implementation 'net.objecthunter:exp4j:0.4.8'
+}
+
+gradle.startParameter.continueOnFailure = true
+test.finalizedBy(aggregate)
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+    systemProperty "cucumber.options", System.getProperty("cucumber.options")
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
