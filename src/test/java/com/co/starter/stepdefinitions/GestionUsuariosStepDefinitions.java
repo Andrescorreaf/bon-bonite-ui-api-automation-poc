@@ -7,16 +7,11 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 
-// Tasks API
 import tasks.api.CrearUsuario;
 import tasks.api.AutenticarUsuario;
 import tasks.api.ActualizarUsuario;
 
-// Tasks UI
-import tasks.ui.NavegarARegistro;
-import tasks.ui.RegistrarUsuarioUI;
 
-// Questions
 import questions.api.CodigoRespuesta;
 import questions.api.TokenValido;
 import questions.api.UsuarioCreado;
